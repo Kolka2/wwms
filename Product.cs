@@ -1,38 +1,63 @@
-namespace wwms;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-// TODO: Добавить класс оптовых упаковок
-public class Product
+namespace Simul
 {
-    public string Name { get; }
-    public int Quantity { get; private set; }
-    public int ExpiryDays { get; }
-    public decimal Price { get; private set; }
-    public decimal DiscountedPrice { get; private set; }
-    public bool IsDiscounted => DiscountedPrice < Price;
-
-    public Product(string name, int quantity, int expiryDays, decimal price)
+    internal class Product:IComparable<Product>,IComparer<Product>
     {
-        Name = name;
-        Quantity = quantity;
-        ExpiryDays = expiryDays;
-        Price = price;
-        DiscountedPrice = price;
-    }
+        public string Name { get; set; }
+        public double Quantity { get; set; } //Гр или кг или штук в одной пачке
+        public int ExpiryDays { get; set; } //срок годности в днях
+        public double Price { get;  set; }
+        Random r = new Random();
+        public int MinWholesalePackages { get; set; }
 
-    public void ApplyDiscount(decimal discountPercentage)
-    {
-        DiscountedPrice = Price * (1 - discountPercentage / 100);
-    }
+        public Product(string name, double quantity, int expiryDays, double price, int minWholesalePackages)
+        {
+            Name = name;
+            Quantity = quantity;
+            ExpiryDays = expiryDays;
+            Price = price;
+            MinWholesalePackages = minWholesalePackages;
+        }
+        public Product() 
+        {
+            Name = "";
+            Quantity=0;
+            ExpiryDays=0;
+            Price=0;
+            MinWholesalePackages=0;
+        }
+      
 
-    public void ReduceQuantity(int amount)
-    {
-        if (amount > Quantity)
-            throw new ArgumentException("Not enough quantity available.");
-        Quantity -= amount;
-    }
+        public int CompareTo(Product p)
+        {
+            return Name.CompareTo(p.Name);
+        }
+        public  bool Equals(Product x, Product y)
+        {
+            // Сравниваем только по имени
+            return x.Name == y.Name;
+        }
 
-    public void IncreaseQuantity(int amount)
-    {
-        Quantity += amount;
+        public override int GetHashCode()
+        {
+            // Хеш-код только по имени
+            return Name.GetHashCode();
+        }
+
+        int IComparer<Product>.Compare(Product x, Product y)
+        {
+           return x.Name.CompareTo(y.Name);
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

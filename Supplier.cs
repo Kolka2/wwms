@@ -1,34 +1,42 @@
-namespace wwms;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public class Supplier
+namespace Simul
 {
-    private readonly RandomGenerator _randomGenerator;
-    private readonly Dictionary<string, int> _supplyRequests = new();
-
-    public Supplier(RandomGenerator randomGenerator)
+    internal class Supplier
     {
-        _randomGenerator = randomGenerator;
-    }
 
-    //
-    public void RequestSupply(string productName, int quantity)
-    {
-        if (!_supplyRequests.TryAdd(productName, quantity))
-        {
-            // TODO: Генерировать новые продукты со случайным 
-            _supplyRequests[productName] += quantity;
+        public int _tempday;
+        public Dictionary<Product,WholesalePackage> Packages = new Dictionary<Product, WholesalePackage>(new ProductComparer());
+        public Supplier(Warehouse wh) {
+            foreach (Product key in wh.Inventory.Keys)
+            {
+                _tempday = wh._tempday;
+                Packages.Add(key, wh.Inventory[key][0]);
+            }
+
+
         }
-    }
-
-    public Dictionary<string, int> FulfillSupply(Warehouse warehouse)
-    {
-        var supplies = new Dictionary<string, int>();
-        foreach (var request in _supplyRequests)
+        
+        
+        public SupplyPackage CreatePackage(SupplyOrder order)
         {
-            int deliveryTime = _randomGenerator.Next(1, 6); // Случайное время доставки от 1 до 5 дней
-            supplies[request.Key] = request.Value;
+           SupplyPackage sp = new SupplyPackage(order);
+           foreach (Product product in order.Items.Keys)
+            {
+              List<WholesalePackage> list = new List<WholesalePackage>();
+                for (int i = 0; i < order.Items[product]; i++)
+                {
+                    WholesalePackage p = new WholesalePackage(product,Packages[product].PackageCount,_tempday+product.ExpiryDays);
+                    list.Add(p);
+                }
+                sp.AddProduct(product, list);
+                    
+            }
+            return sp;
         }
-        _supplyRequests.Clear();
-        return supplies;
     }
 }
