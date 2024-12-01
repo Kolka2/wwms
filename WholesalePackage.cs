@@ -1,24 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace Simul
+﻿namespace wwms
 {
-    internal class WholesalePackage:Product,IComparable<WholesalePackage>
+    internal class WholesalePackage : Product, IComparable<WholesalePackage>
     {
-        public int PackageCount; //Количество упаковок в одной оптовой упаковке
-        public int TempPackageCount;//Текущее количество
+        public int PackageCount; // Количество упаковок в одной оптовой упаковке
+        public int TempPackageCount; // Текущее количество
         public double DiscountPrice;
         public int WasteDay;
         public bool IsDicounted => DiscountPrice < base.Price;
 
-        public WholesalePackage(Product p,int PackageCount,int WasteDay)
+        public WholesalePackage(Product p, int PackageCount, int WasteDay)
         {
-            this.PackageCount=PackageCount;
+            this.PackageCount = PackageCount;
             base.Name = p.Name;
             base.Quantity = p.Quantity;
             base.ExpiryDays = p.ExpiryDays;
@@ -26,13 +18,11 @@ namespace Simul
             base.MinWholesalePackages = p.MinWholesalePackages;
             DiscountPrice = p.Price;
             this.WasteDay = WasteDay;
-            
         }
 
         public void MakeDiscount(double disc)
         {
             DiscountPrice = base.Price - base.Price * disc;
-
         }
 
         int IComparable<WholesalePackage>.CompareTo(WholesalePackage other)

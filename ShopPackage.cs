@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Simul
+﻿namespace wwms
 {
-    internal class shopPackage
+    internal class ShopPackage
     {
         public int _dayForRealize;
         public string Name;
-        public Dictionary<Product, int> ItemsWithoutDiscount { get; set; } = new Dictionary<Product, int>(new ProductComparer());
-        public Dictionary<Product, int> ItemsWithDiscount { get; set; } = new Dictionary<Product, int>(new ProductComparer());
+        public Dictionary<Product, int> ItemsWithoutDiscount { get; set; } = new(new ProductComparer());
+        public Dictionary<Product, int> ItemsWithDiscount { get; set; } = new(new ProductComparer());
 
-        public shopPackage(string name)
+        public ShopPackage(string name)
         {
             Name = name;
         }

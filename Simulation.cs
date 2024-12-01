@@ -1,32 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
-namespace Simul
+﻿namespace wwms
 {
     internal class Simulation
     {
-
-        private readonly Random _random = new Random();
+        private readonly Random _random = new();
         private readonly string _filename;
         private readonly double _disc;
         private readonly int _totalDays;
         private readonly int _numStores;
         private readonly int _numProducts;
-        private readonly RandomGenerator _randomGenerator = new RandomGenerator();
-        public Dictionary<Product, List<WholesalePackage>> forWh = new Dictionary<Product, List<WholesalePackage>>(new ProductComparer());
+        private readonly RandomGenerator _randomGenerator;
+        public Dictionary<Product, List<WholesalePackage>> forWh = new(new ProductComparer());
         private string[] _productList;
         public Warehouse wh;
         public int _MinimalCountProducts;
         public bool created = true;
 
-        public Simulation(string f,double d,int totaldDays,int numStores,int numProducts,int MinimalCountProducts, RandomGenerator r1) {
+        public Simulation(string f, double d, int totaldDays, int numStores, int numProducts, int MinimalCountProducts,
+            RandomGenerator r1)
+        {
             _filename = f;
             _disc = d;
             _totalDays = totaldDays;
@@ -36,29 +27,32 @@ namespace Simul
             _randomGenerator = r1;
             created = false;
         }
-        public Simulation(string f,double d,int totalDays, int numStore,int numProducts,int MinimalCountProducts,Dictionary<Product,List<WholesalePackage>> products,RandomGenerator r1)
+
+        public Simulation(string f, double d, int totalDays, int numStore, int numProducts, int MinimalCountProducts,
+            Dictionary<Product, List<WholesalePackage>> products, RandomGenerator r1)
         {
             _filename = f;
             _disc = d;
             _randomGenerator = r1;
             _totalDays = totalDays;
             _numStores = numStore;
-            _numProducts=numProducts;
+            _numProducts = numProducts;
             _MinimalCountProducts = MinimalCountProducts;
             forWh = products;
             created = true;
-
-
         }
 
         public void Run()
         {
-            _productList = new string[]{"Консервированные овощи", "Макаронные изделия", "Крупы",
-        "Растительное масло", "Томатная паста", "Сахар",
-        "Мука", "Соль", "Чай", "Кофе", "Шоколад", "Печенье",
-        "Молочные продукты", "Мясо и мясопродукты",
-        "Рыба и морепродукты", "Фрукты", "Овощи", "Бакалея",
-        "Безалкогольные напитки", "Алкогольная продукция",};
+            _productList = new string[]
+            {
+                "Консервированные овощи", "Макаронные изделия", "Крупы",
+                "Растительное масло", "Томатная паста", "Сахар",
+                "Мука", "Соль", "Чай", "Кофе", "Шоколад", "Печенье",
+                "Молочные продукты", "Мясо и мясопродукты",
+                "Рыба и морепродукты", "Фрукты", "Овощи", "Бакалея",
+                "Безалкогольные напитки", "Алкогольная продукция",
+            };
 
             //Warehouse wh = new Warehouse(_totalDays,_numStores,_numProducts,_productList,1);
             //Supplier supplier = new Supplier(wh);
@@ -77,56 +71,56 @@ namespace Simul
 
             // Начальный список продуктов не формируется случайным образом, а задается!
 
-            ///
-            Warehouse wh = new Warehouse(); //Склад
+            Warehouse wh = new(); //Склад
             if (created)
             {
-                
-               wh = new Warehouse(1, forWh);
+                wh = new(1, forWh);
             }
-           else
+            else
             {
-                 wh = new Warehouse(_totalDays, _numStores, _numProducts, _productList, 1);
+                wh = new(_totalDays, _numStores, _numProducts, _productList, 1);
             }
 
-           
-            Supplier supplier = new Supplier(wh); //Поставщик
-            
-            Statistic statistic = new Statistic(wh,_filename); //Статистика 
-            List<shopPackage> shopPacks = new List<shopPackage>(); //Перевозки для следующего дня
-            List<shopOrder> shopOrders = new List<shopOrder>(); //Заказы что пришли сегодня
+
+            Supplier supplier = new(wh); //Поставщик
+
+            Statistic statistic = new(wh, _filename); // Статистика 
+            List<ShopPackage> shopPacks = new(); // Перевозки для следующего дня
+            List<ShopOrder> shopOrders = new(); // Заказы, что пришли сегодня
             statistic.AllStat();
-            for (int i = 1; i <= _totalDays;i++)
+            for (int i = 1; i <= _totalDays; i++)
             {
                 Console.WriteLine("===============");
                 Console.WriteLine("===============");
                 Console.WriteLine($"День:{i}");
-               
-                
-               
+
+
                 wh.FullFill(); //сделали обновление ассортимента
-                Console.WriteLine("После обновления асссортимента");
+                Console.WriteLine("После обновления ассортимента");
                 statistic.WarehouseStatus(wh);
                 wh.MakeTransport(shopPacks); //Сделали перевозки по магазинам
-                List<WholesalePackage> discpack = wh.DiscountPrices(_disc); //Сделали скидки //возвращаемое значение создать
+                List<WholesalePackage>
+                    discpack = wh.DiscountPrices(_disc); //Сделали скидки //возвращаемое значение создать
                 statistic.ChangeLostDiscounted(discpack);
-              List<WholesalePackage> Deleted = wh.RemoveExpirated(); //удалили просрочку //Возвращаемое значение создать
+                List<WholesalePackage>
+                    Deleted = wh.RemoveExpirated(); //удалили просрочку //Возвращаемое значение создать
                 statistic.ChangeLostDeleted(Deleted);
-                
+
                 Console.WriteLine("После перевозок");
                 statistic.WarehouseStatus(wh);
-               
-               SupplyOrder supOrder = wh.CreateSupplyOrder(); //Сделали новый заказ к поставщику
-                SupplyPackage supPackage = supplier.CreatePackage(supOrder);//сделали посылку от поставщика
+
+                SupplyOrder supOrder = wh.CreateSupplyOrder(); //Сделали новый заказ к поставщику
+                SupplyPackage supPackage = supplier.CreatePackage(supOrder); //сделали посылку от поставщика
                 wh.AddPackge(supPackage); //Добавили в ожидание
-                
+
                 //Делаем список заказов перевозки на следующий день
                 shopOrders.Clear();
                 for (int j = 0; j < _numStores; j++)
                 {
-                    shopOrder order = new shopOrder(wh.Inventory,$"Shop{j}",_randomGenerator);     
+                    ShopOrder order = new(wh.Inventory, $"Shop{j}", _randomGenerator);
                     shopOrders.Add(order);
                 }
+
                 Console.WriteLine($"Перевозки по магазинам на {i + 1}:");
                 shopPacks = wh.createTransportList(shopOrders); //Сделали новый перевозочный лист
                 statistic.ChangeCostWithoutDiscount(shopPacks);
@@ -138,13 +132,9 @@ namespace Simul
                 Console.WriteLine("===============");
                 wh._tempday += 1;
                 supplier._tempday += 1;
-
-
-
             }
+
             statistic.AllStat();
-
         }
-
     }
 }

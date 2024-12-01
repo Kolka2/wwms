@@ -1,30 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Simul
+﻿namespace wwms
 {
-    internal class shopOrder
+    internal class ShopOrder
     {
-    
         public int _MinimalCountProducts;
         public string Name;
         public RandomGenerator r;
-        public Dictionary<Product, double> ItemsWithoutDiscount { get; set; } = new Dictionary<Product, double>(new ProductComparer());
-        public Dictionary<Product, double> ItemsWithDiscount { get; set; } = new Dictionary<Product, double>(new ProductComparer());
+
+        public Dictionary<Product, double> ItemsWithoutDiscount { get; set; } = new(new ProductComparer());
+
+        public Dictionary<Product, double> ItemsWithDiscount { get; set; } = new(new ProductComparer());
 
 
-        public shopOrder(Dictionary<Product,List<WholesalePackage>> inventory,string n, RandomGenerator r1) 
+        public ShopOrder(Dictionary<Product, List<WholesalePackage>> inventory, string n, RandomGenerator r1)
         {
             r = r1;
 
-            //Переписать и сразу забирать оптовые упаковки со скидкой
+            // Переписать и сразу забирать оптовые упаковки со скидкой
             Name = n;
-           
+
             List<Product> products = r.GetListProducts(inventory.Keys.ToList());
-            //Их обязательно должно быть очень много
+            // Их обязательно должно быть очень много
             foreach (Product product in products)
             {
                 double count = r.GenQuantity();
@@ -38,7 +33,8 @@ namespace Simul
                     ItemsWithoutDiscount[product] += count;
                 }
 
-                foreach (WholesalePackage package in packages) {
+                foreach (WholesalePackage package in packages)
+                {
                     if (package.IsDicounted)
                     {
                         if (!ItemsWithDiscount.ContainsKey(package))
@@ -49,21 +45,20 @@ namespace Simul
                         {
                             ItemsWithDiscount[package] += r.GenQuantity(); //Добавить и сюда пользовательский рандом
                         }
-                    }    
+                    }
                 }
-
             }
-
-
-
         }
-        public shopOrder()
-        { }
-        public void AddProductWithDiscount(Product product,double count)
+
+        public ShopOrder()
+        {
+        }
+
+        public void AddProductWithDiscount(Product product, double count)
         {
             if (ItemsWithDiscount.ContainsKey(product))
             {
-                ItemsWithDiscount[product]+= count;
+                ItemsWithDiscount[product] += count;
             }
             else
             {
