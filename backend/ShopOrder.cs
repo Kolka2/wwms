@@ -1,6 +1,6 @@
-﻿namespace wwms
+﻿namespace backend
 {
-    internal class ShopOrder
+    public class ShopOrder
     {
         public readonly string Name;
 
@@ -9,9 +9,8 @@
         public Dictionary<Product, double> ItemsWithDiscount { get; } = new(new ProductComparer());
 
 
-        public ShopOrder(Dictionary<Product, List<WholesalePackage>> inventory, string n, RandomGenerator r1)
+        public ShopOrder(Dictionary<Product, List<WholesalePackage>> inventory, string n, RandomGenerator r)
         {
-            var r = r1;
             Name = n;
             List<Product> products = r.GetListProducts(inventory.Keys.ToList());
 

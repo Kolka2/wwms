@@ -1,6 +1,6 @@
-﻿namespace wwms
+﻿namespace backend
 {
-    internal class Simulation
+    public class Simulation
     {
         private readonly string _filename;
         private readonly double _disc;
@@ -56,7 +56,7 @@
             }
             else
             {
-                wh = new Warehouse(_totalDays, _numStores, _numProducts, _productList, 1);
+                wh = new Warehouse(_totalDays, _numProducts, _productList, 1);
             }
 
 

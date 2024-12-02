@@ -1,6 +1,6 @@
-﻿namespace wwms
+﻿namespace backend
 {
-    internal class WholesalePackage : Product, IComparable<WholesalePackage>
+    public class WholesalePackage : Product, IComparable<WholesalePackage>
     {
         public readonly int PackageCount; // Количество упаковок в одной оптовой упаковке
         public double DiscountPrice;

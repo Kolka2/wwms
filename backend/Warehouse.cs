@@ -1,6 +1,6 @@
-﻿namespace wwms
+﻿namespace backend
 {
-    internal class Warehouse
+    public class Warehouse
     {
         public int CurrentDay;
         private readonly List<SupplyPackage> _waitPackage = [];
@@ -15,7 +15,7 @@
             CurrentDay = day;
         }
 
-        public Warehouse(int totalDays, int numStores, int numProducts, string[] productList, int day)
+        public Warehouse(int totalDays, int numProducts, string[] productList, int day)
         {
             List<Product> products = [];
             Dictionary<Product, List<WholesalePackage>> inv = new();
@@ -118,7 +118,7 @@
             {
                 foreach (Product p in pack.ItemsWithDiscount.Keys)
                 {
-                    int countForDelete = (int)pack.ItemsWithDiscount[p];
+                    int countForDelete = pack.ItemsWithDiscount[p];
                     var itemsToDelete = Inventory[p]
                         .Where(pck => pck.IsDiscounted)
                         .Take(countForDelete)
@@ -132,7 +132,7 @@
 
                 foreach (Product p in pack.ItemsWithoutDiscount.Keys)
                 {
-                    int countForDelete = (int)pack.ItemsWithoutDiscount[p];
+                    int countForDelete = pack.ItemsWithoutDiscount[p];
                     var itemsToDelete = Inventory[p]
                         .Where(pck => !pck.IsDiscounted)
                         .Take(countForDelete)

@@ -1,6 +1,6 @@
-﻿namespace wwms
+﻿namespace backend
 {
-    internal class SupplyOrder : IComparable<SupplyOrder>
+    public class SupplyOrder : IComparable<SupplyOrder>
     {
         public Dictionary<Product, int> Items { get; set; } = new(new ProductComparer());
         public readonly int DeliveryDay;

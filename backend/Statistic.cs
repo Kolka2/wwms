@@ -1,8 +1,6 @@
-﻿using System.IO;
-
-namespace wwms
+﻿namespace backend
 {
-    internal class Statistic
+    public class Statistic
     {
         private double _totalCost;
         private double _totalLose;
@@ -56,8 +54,6 @@ namespace wwms
                     _totalCost += p.Price * package.ItemsWithoutDiscount[p] * _wh.Helper[p].PackageCount;
                 }
             }
-
-            ;
         }
 
         public void ChangeCostWithDiscount(List<ShopPackage> packages, double discount)

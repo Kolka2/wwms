@@ -1,6 +1,6 @@
-﻿namespace wwms
+﻿namespace backend
 {
-    internal class Product : IComparable<Product>, IComparer<Product>
+    public class Product : IComparable<Product>, IComparer<Product>
     {
         public string Name { get; set; }
         public double Quantity { get; set; } // Гр или кг или штук в одной пачке

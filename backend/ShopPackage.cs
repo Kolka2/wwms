@@ -1,6 +1,6 @@
-﻿namespace wwms
+﻿namespace backend
 {
-    internal class ShopPackage
+    public class ShopPackage
     {
         public readonly string Name;
         public Dictionary<Product, int> ItemsWithoutDiscount { get; } = new(new ProductComparer());

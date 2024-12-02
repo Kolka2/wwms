@@ -1,6 +1,6 @@
-﻿namespace wwms
+﻿namespace backend
 {
-    internal class RandomGenerator
+    public class RandomGenerator
     {
         private readonly Random _r = new();
         private readonly int _minimalCountProducts;
