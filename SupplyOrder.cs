@@ -1,6 +1,6 @@
 ﻿namespace wwms
 {
-    internal class SupplyOrder : IOrder, IComparable<SupplyOrder>
+    internal class SupplyOrder : IComparable<SupplyOrder>
     {
         public Dictionary<Product, int> Items { get; set; } = new(new ProductComparer());
         public readonly int DeliveryDay;
