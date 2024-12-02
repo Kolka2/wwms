@@ -1,37 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using wwms;
-
-namespace wwms
+﻿namespace wwms
 {
-    internal class SupplyOrder : IOrder,IComparable<SupplyOrder>
+    internal class SupplyOrder : IOrder, IComparable<SupplyOrder>
     {
-        public Dictionary<Product, int> Items { get; set; } = new(new ProductComparer()); // Продукт и кол-во оптовых упаковок
-        public int tempDay;
-        public int DeliveryDay;
+        public Dictionary<Product, int> Items { get; set; } = new(new ProductComparer());
+        public readonly int DeliveryDay;
+
         public SupplyOrder(int tempDay)
         {
             Random random = new Random();
-            DeliveryDay =tempDay+random.Next(1,6);
+            DeliveryDay = tempDay + random.Next(1, 6);
         }
 
-        public void AddItem(Product product, int quantity) // Добавить продукт в заказ
+        public void AddItem(Product product, int quantity)
         {
-            if (Items.ContainsKey(product))
+            if (!Items.TryAdd(product, quantity))
             {
-               
                 Items[product] += quantity;
             }
-            else
-            {
-                Items.Add(product, quantity);
-            }
         }
 
-        public void UpdateItemQuantity(Product product, int quantity) // Изменить количество продуктов в заказе
+        public void UpdateItemQuantity(Product product, int quantity)
         {
             if (Items.ContainsKey(product))
             {
@@ -39,7 +27,7 @@ namespace wwms
             }
         }
 
-        public void RemoveItem(Product product) // Удалить продукт
+        public void RemoveItem(Product product)
         {
             Items.Remove(product);
         }

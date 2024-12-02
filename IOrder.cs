@@ -2,12 +2,12 @@
 {
     internal interface IOrder
     {
-        Dictionary<Product, int> Items { get; set; } //Список продуктов в заказе
+        Dictionary<Product, int> Items { get; set; }
 
-        void AddItem(Product product, int quantity); //Добавить продукт в заказ
+        void AddItem(Product product, int quantity);
 
-        void UpdateItemQuantity(Product product, int quantity); //Изменить количество продуктов в заказе
+        void UpdateItemQuantity(Product product, int quantity);
 
-        void RemoveItem(Product product); //Удалить продукт
+        void RemoveItem(Product product);
     }
 }

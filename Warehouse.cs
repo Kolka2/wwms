@@ -2,53 +2,44 @@
 {
     internal class Warehouse
     {
-        private string[] _productList;
+        public int CurrentDay;
+        private readonly List<SupplyPackage> _waitPackage = [];
 
-        // private readonly int _totalDays; вынесем в отдельный класс
-        public int _tempday; //Текущий день
-        private List<SupplyPackage> _WaitPackage = new(); //Посылки от поставщика ожидающие распаковки
-        public List<ShopOrder> _TranportList = new();
+        public readonly Dictionary<Product, List<WholesalePackage>> Inventory = new(new ProductComparer());
 
-        public Dictionary<Product, List<WholesalePackage>>
-            Inventory = new(new ProductComparer()); //Поиск уцененки по листу
-
-        public Dictionary<Product, WholesalePackage> helper = new(new ProductComparer()); //Вспомогательный словарь
-
-        public Warehouse()
-        {
-        }
-
+        public readonly Dictionary<Product, WholesalePackage> Helper = new(new ProductComparer());
+        
         public Warehouse(int day, Dictionary<Product, List<WholesalePackage>> inv)
         {
             Inventory = inv;
-            _tempday = day;
+            CurrentDay = day;
         }
 
-        public Warehouse(int _totalDays, int _numStores, int _numProducts, string[] _productList, int day)
+        public Warehouse(int totalDays, int numStores, int numProducts, string[] productList, int day)
         {
-            List<Product> products = new();
+            List<Product> products = [];
             Dictionary<Product, List<WholesalePackage>> inv = new();
-            RandomGenerator _randomGenerator = new RandomGenerator(_numProducts);
+            RandomGenerator randomGenerator = new RandomGenerator(numProducts);
 
 
-            for (int i = 0; i < _numProducts; i++)
+            for (int i = 0; i < numProducts; i++)
             {
-                string productName = _productList[i];
-                double quantity = _randomGenerator.NextDouble(10, 50);
-                int expiryDays = _randomGenerator.NextInt(5, _totalDays);
-                double price = _randomGenerator.NextDouble(10, 100);
-                int minPackages = _randomGenerator.NextInt(10, 30);
+                string productName = productList[i];
+                double quantity = randomGenerator.NextDouble(10, 50);
+                int expiryDays = randomGenerator.NextInt(5, totalDays);
+                double price = randomGenerator.NextDouble(10, 100);
+                int minPackages = randomGenerator.NextInt(10, 30);
                 Product p = new Product(productName, quantity, expiryDays, price, minPackages);
                 products.Add(p);
             }
 
             foreach (Product p in products)
             {
-                int Count = _randomGenerator.NextInt(10, 20);
+                int count = randomGenerator.NextInt(10, 20);
                 List<WholesalePackage> packages = new();
-                WholesalePackage package = new WholesalePackage(p, Count, p.ExpiryDays + day);
-                helper.Add(p, package);
-                for (int i = 0; i < Count; i++)
+                WholesalePackage package = new WholesalePackage(p, count, p.ExpiryDays + day);
+                Helper.Add(p, package);
+                for (int i = 0; i < count; i++)
                 {
                     packages.Add(package);
                 }
@@ -56,7 +47,7 @@
                 inv.Add(p, packages);
             }
 
-            _tempday = 1;
+            CurrentDay = 1;
             foreach (Product p in inv.Keys)
             {
                 Inventory.Add(p, inv[p]);
@@ -65,21 +56,21 @@
 
         public SupplyOrder CreateSupplyOrder() // Создать заказ к поставщику
         {
-            SupplyOrder order = new SupplyOrder(_tempday);
+            SupplyOrder order = new SupplyOrder(CurrentDay);
             foreach (Product product in Inventory.Keys)
             {
-                if (Inventory[product].Count() == 0)
+                if (Inventory[product].Count == 0)
                 {
                     order.AddItem(product, product.MinWholesalePackages + 5);
                 }
-                else if (Inventory[product].Count() < product.MinWholesalePackages)
+                else if (Inventory[product].Count < product.MinWholesalePackages)
                 {
-                    int temp = Inventory[product].Count();
+                    int temp = Inventory[product].Count;
                     int need = product.MinWholesalePackages;
                     int fororder = need - temp;
                     order.AddItem(product, fororder);
                 }
-                else if (Inventory[product].Count() == product.MinWholesalePackages)
+                else if (Inventory[product].Count == product.MinWholesalePackages)
                 {
                     int need = product.MinWholesalePackages;
                     order.AddItem(product, need + 5);
@@ -89,36 +80,34 @@
             return order;
         }
 
-        public void AddPackge(SupplyPackage s) // Добавить посылку от поставщика в ожидаемые
+        public void AddPackage(SupplyPackage s) // Добавить посылку от поставщика в ожидаемые
         {
-            _WaitPackage.Add(s);
+            _waitPackage.Add(s);
         }
 
         public void FullFill() // Пополнить свои запасы после отдачи заказа поставщиком
         {
-            List<SupplyPackage> RealisedSupplys = new();
-            if (_WaitPackage.Count() != 0)
+            List<SupplyPackage> realisedSupplys = [];
+            if (_waitPackage.Count == 0) return;
+            
+            foreach (SupplyPackage sp in _waitPackage)
             {
-                foreach (SupplyPackage sp in _WaitPackage)
+                if (sp.DeliveryDay != CurrentDay) continue;
+                
+                realisedSupplys.Add(sp);
+                foreach (Product product in sp.Products.Keys)
                 {
-                    if (sp.DeliveryDay == _tempday)
+                    var tempList = sp.Products[product].ToList();
+                    foreach (WholesalePackage package in tempList)
                     {
-                        RealisedSupplys.Add(sp);
-                        foreach (Product product in sp.Products.Keys)
-                        {
-                            var tempList = sp.Products[product].ToList();
-                            foreach (WholesalePackage package in tempList)
-                            {
-                                Inventory[product].Add(package);
-                            }
-                        }
+                        Inventory[product].Add(package);
                     }
                 }
+            }
 
-                foreach (SupplyPackage pack in RealisedSupplys)
-                {
-                    _WaitPackage.Remove(pack);
-                }
+            foreach (SupplyPackage pack in realisedSupplys)
+            {
+                _waitPackage.Remove(pack);
             }
         }
 
@@ -129,10 +118,10 @@
             {
                 foreach (Product p in pack.ItemsWithDiscount.Keys)
                 {
-                    int CountForDelete = (int)pack.ItemsWithDiscount[p];
+                    int countForDelete = (int)pack.ItemsWithDiscount[p];
                     var itemsToDelete = Inventory[p]
-                        .Where(pck => pck.IsDicounted)
-                        .Take(CountForDelete)
+                        .Where(pck => pck.IsDiscounted)
+                        .Take(countForDelete)
                         .ToList();
 
                     foreach (var item in itemsToDelete)
@@ -143,10 +132,10 @@
 
                 foreach (Product p in pack.ItemsWithoutDiscount.Keys)
                 {
-                    int CountForDelete = (int)pack.ItemsWithoutDiscount[p];
+                    int countForDelete = (int)pack.ItemsWithoutDiscount[p];
                     var itemsToDelete = Inventory[p]
-                        .Where(pck => !pck.IsDicounted)
-                        .Take(CountForDelete)
+                        .Where(pck => !pck.IsDiscounted)
+                        .Take(countForDelete)
                         .ToList();
 
                     foreach (var item in itemsToDelete)
@@ -158,56 +147,54 @@
         }
 
 
-        public List<ShopPackage> createTransportList(List<ShopOrder> orders) // Обслужить заказ от магазина.
-            // Т.е возвращаемый ордер это то, что будем убират из инвентори
+        public List<ShopPackage> CreateTransportList(List<ShopOrder> orders) // Обслужить заказ от магазина.
         {
-            // Формирует относительно сегодняшнего дня! Ошибка бизнеслогики
-            List<ShopPackage> newPackages = new();
-            // Возвращать список новых заказов
+            List<ShopPackage> newPackages = [];
+
             foreach (var order in orders)
             {
                 ShopPackage newPackage = new ShopPackage(order.Name);
                 foreach (Product p in order.ItemsWithoutDiscount.Keys)
                 {
-                    int CountPacks = (int)(order.ItemsWithoutDiscount[p] / p.Quantity); // Нужно обычных упаковок
-                    int CountWholesalePacks = CountPacks / helper[p].PackageCount; // Нужно оптовых упаковок
-                    int r = CountPacks - CountWholesalePacks * helper[p].PackageCount;
-                    if (r > helper[p].PackageCount / 2)
+                    int countPacks = (int)(order.ItemsWithoutDiscount[p] / p.Quantity);
+                    int countWholesalePacks = countPacks / Helper[p].PackageCount;
+                    int r = countPacks - countWholesalePacks * Helper[p].PackageCount;
+                    if (r > Helper[p].PackageCount / 2)
                     {
-                        CountWholesalePacks += 1;
+                        countWholesalePacks += 1;
                     }
 
-                    int HaveWholesalePacks = Inventory[p].Count(x => !x.IsDicounted);
+                    int haveWholesalePacks = Inventory[p].Count(x => !x.IsDiscounted);
 
-                    if (HaveWholesalePacks >= CountWholesalePacks)
+                    if (haveWholesalePacks >= countWholesalePacks)
                     {
-                        newPackage.AddProductWithoutDiscount(p, CountWholesalePacks);
+                        newPackage.AddProductWithoutDiscount(p, countWholesalePacks);
                     }
                     else
                     {
-                        newPackage.AddProductWithoutDiscount(p, HaveWholesalePacks);
+                        newPackage.AddProductWithoutDiscount(p, haveWholesalePacks);
                     }
                 }
 
                 foreach (Product p in order.ItemsWithDiscount.Keys)
                 {
-                    int CountPacks = (int)(order.ItemsWithDiscount[p] / p.Quantity); // Нужно обычных упаковок
-                    int CountWholesalePacks = CountPacks / helper[p].PackageCount; // Нужно оптовых упаковок
-                    int r = CountPacks - CountWholesalePacks * helper[p].PackageCount;
-                    if (r > helper[p].PackageCount / 2)
+                    int countPacks = (int)(order.ItemsWithDiscount[p] / p.Quantity);
+                    int countWholesalePacks = countPacks / Helper[p].PackageCount;
+                    int r = countPacks - countWholesalePacks * Helper[p].PackageCount;
+                    if (r > Helper[p].PackageCount / 2)
                     {
-                        CountWholesalePacks += 1;
+                        countWholesalePacks += 1;
                     }
 
-                    int HaveWholesalePacks = Inventory[p].Count(x => x.IsDicounted);
+                    int haveWholesalePacks = Inventory[p].Count(x => x.IsDiscounted);
 
-                    if (HaveWholesalePacks >= CountWholesalePacks)
+                    if (haveWholesalePacks >= countWholesalePacks)
                     {
-                        newPackage.AddProductWithDiscount(p, CountWholesalePacks);
+                        newPackage.AddProductWithDiscount(p, countWholesalePacks);
                     }
                     else
                     {
-                        newPackage.AddProductWithDiscount(p, HaveWholesalePacks);
+                        newPackage.AddProductWithDiscount(p, haveWholesalePacks);
                     }
                 }
 
@@ -217,14 +204,14 @@
             return newPackages;
         }
 
-        public List<WholesalePackage> DiscountPrices(double disc) // Создать скидки
+        public List<WholesalePackage> DiscountPrices(double disc)
         {
             List<WholesalePackage> discounted = new();
             foreach (Product p in Inventory.Keys)
             {
                 foreach (WholesalePackage package in Inventory[p])
                 {
-                    if (package.WasteDay - _tempday < 3 && !package.IsDicounted)
+                    if (package.WasteDay - CurrentDay < 3 && !package.IsDiscounted)
                     {
                         package.MakeDiscount(disc);
                         discounted.Add(package);
@@ -235,7 +222,7 @@
             return discounted;
         }
 
-        public List<WholesalePackage> RemoveExpirated() // Удалить просроченные оптовые упаковки
+        public List<WholesalePackage> RemoveExpirated()
         {
             List<WholesalePackage> deleted = new();
             List<WholesalePackage> packsForDel = new();
@@ -244,7 +231,7 @@
                 packsForDel.Clear();
                 foreach (WholesalePackage p in Inventory[product])
                 {
-                    if (p.WasteDay == _tempday)
+                    if (p.WasteDay == CurrentDay)
                     {
                         packsForDel.Add(p);
                         deleted.Add(p);

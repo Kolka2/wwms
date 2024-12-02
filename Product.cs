@@ -4,9 +4,8 @@
     {
         public string Name { get; set; }
         public double Quantity { get; set; } // Гр или кг или штук в одной пачке
-        public int ExpiryDays { get; set; } // срок годности в днях
+        public int ExpiryDays { get; set; }
         public double Price { get; set; }
-        Random r = new();
         public int MinWholesalePackages { get; set; }
 
         public Product(string name, double quantity, int expiryDays, double price, int minWholesalePackages)
@@ -35,13 +34,11 @@
 
         public bool Equals(Product x, Product y)
         {
-            // Сравниваем только по имени
             return x.Name == y.Name;
         }
 
         public override int GetHashCode()
         {
-            // Хеш-код только по имени
             return Name.GetHashCode();
         }
 

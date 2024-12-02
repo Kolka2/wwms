@@ -2,20 +2,17 @@
 {
     internal class Simulation
     {
-        private readonly Random _random = new();
         private readonly string _filename;
         private readonly double _disc;
         private readonly int _totalDays;
         private readonly int _numStores;
         private readonly int _numProducts;
         private readonly RandomGenerator _randomGenerator;
-        public Dictionary<Product, List<WholesalePackage>> forWh = new(new ProductComparer());
+        private readonly Dictionary<Product, List<WholesalePackage>> _forWh = new(new ProductComparer());
         private string[] _productList;
-        public Warehouse wh;
-        public int _MinimalCountProducts;
-        public bool created = true;
+        private readonly bool _created;
 
-        public Simulation(string f, double d, int totaldDays, int numStores, int numProducts, int MinimalCountProducts,
+        public Simulation(string f, double d, int totaldDays, int numStores, int numProducts,
             RandomGenerator r1)
         {
             _filename = f;
@@ -23,12 +20,11 @@
             _totalDays = totaldDays;
             _numStores = numStores;
             _numProducts = numProducts;
-            _MinimalCountProducts = MinimalCountProducts;
             _randomGenerator = r1;
-            created = false;
+            _created = false;
         }
 
-        public Simulation(string f, double d, int totalDays, int numStore, int numProducts, int MinimalCountProducts,
+        public Simulation(string f, double d, int totalDays, int numStore, int numProducts,
             Dictionary<Product, List<WholesalePackage>> products, RandomGenerator r1)
         {
             _filename = f;
@@ -37,56 +33,38 @@
             _totalDays = totalDays;
             _numStores = numStore;
             _numProducts = numProducts;
-            _MinimalCountProducts = MinimalCountProducts;
-            forWh = products;
-            created = true;
+            _forWh = products;
+            _created = true;
         }
 
         public void Run()
         {
-            _productList = new string[]
-            {
+            _productList =
+            [
                 "Консервированные овощи", "Макаронные изделия", "Крупы",
                 "Растительное масло", "Томатная паста", "Сахар",
                 "Мука", "Соль", "Чай", "Кофе", "Шоколад", "Печенье",
                 "Молочные продукты", "Мясо и мясопродукты",
                 "Рыба и морепродукты", "Фрукты", "Овощи", "Бакалея",
-                "Безалкогольные напитки", "Алкогольная продукция",
-            };
+                "Безалкогольные напитки", "Алкогольная продукция"
+            ];
 
-            //Warehouse wh = new Warehouse(_totalDays,_numStores,_numProducts,_productList,1);
-            //Supplier supplier = new Supplier(wh);
-            // Product p = new Product("Крупы", 1, 1, 1, 1);
-            // SupplyOrder so = wh.CreateSupplyOrder();
-            // SupplyPackage  sp = supplier.CreatePackage(so);
-            // sp.DeliveryDay = 1;
-            // wh.AddPackge(sp);
-            // wh.FullFill();
-
-            // shopOrder order = new shopOrder(wh.Inventory);
-            // shopOrder order2 = new shopOrder(wh.Inventory);
-            // List<shopOrder> orders = new List<shopOrder>() { order, order2 };
-            //List<shopOrder> tr = wh.createTransportList(orders);
-            // wh.MakeTransport(tr);
-
-            // Начальный список продуктов не формируется случайным образом, а задается!
-
-            Warehouse wh = new(); //Склад
-            if (created)
+            Warehouse wh;
+            if (_created)
             {
-                wh = new(1, forWh);
+                wh = new Warehouse(1, _forWh);
             }
             else
             {
-                wh = new(_totalDays, _numStores, _numProducts, _productList, 1);
+                wh = new Warehouse(_totalDays, _numStores, _numProducts, _productList, 1);
             }
 
 
-            Supplier supplier = new(wh); //Поставщик
+            Supplier supplier = new(wh);
 
-            Statistic statistic = new(wh, _filename); // Статистика 
-            List<ShopPackage> shopPacks = new(); // Перевозки для следующего дня
-            List<ShopOrder> shopOrders = new(); // Заказы, что пришли сегодня
+            Statistic statistic = new(wh, _filename);
+            List<ShopPackage> shopPacks = []; // Перевозки для следующего дня
+            List<ShopOrder> shopOrders = []; // Заказы, что пришли сегодня
             statistic.AllStat();
             for (int i = 1; i <= _totalDays; i++)
             {
@@ -95,25 +73,23 @@
                 Console.WriteLine($"День:{i}");
 
 
-                wh.FullFill(); //сделали обновление ассортимента
+                wh.FullFill();
                 Console.WriteLine("После обновления ассортимента");
                 statistic.WarehouseStatus(wh);
-                wh.MakeTransport(shopPacks); //Сделали перевозки по магазинам
-                List<WholesalePackage>
-                    discpack = wh.DiscountPrices(_disc); //Сделали скидки //возвращаемое значение создать
+                wh.MakeTransport(shopPacks);
+                List<WholesalePackage> discpack = wh.DiscountPrices(_disc);
                 statistic.ChangeLostDiscounted(discpack);
-                List<WholesalePackage>
-                    Deleted = wh.RemoveExpirated(); //удалили просрочку //Возвращаемое значение создать
-                statistic.ChangeLostDeleted(Deleted);
+                List<WholesalePackage> deleted = wh.RemoveExpirated();
+                statistic.ChangeLostDeleted(deleted);
 
                 Console.WriteLine("После перевозок");
                 statistic.WarehouseStatus(wh);
 
-                SupplyOrder supOrder = wh.CreateSupplyOrder(); //Сделали новый заказ к поставщику
-                SupplyPackage supPackage = supplier.CreatePackage(supOrder); //сделали посылку от поставщика
-                wh.AddPackge(supPackage); //Добавили в ожидание
+                SupplyOrder supOrder = wh.CreateSupplyOrder(); // Сделали новый заказ к поставщику
+                SupplyPackage supPackage = supplier.CreatePackage(supOrder); // Сделали посылку от поставщика
+                wh.AddPackage(supPackage); // Добавили в ожидание
 
-                //Делаем список заказов перевозки на следующий день
+                // Делаем список заказов перевозки на следующий день
                 shopOrders.Clear();
                 for (int j = 0; j < _numStores; j++)
                 {
@@ -122,7 +98,7 @@
                 }
 
                 Console.WriteLine($"Перевозки по магазинам на {i + 1}:");
-                shopPacks = wh.createTransportList(shopOrders); //Сделали новый перевозочный лист
+                shopPacks = wh.CreateTransportList(shopOrders); // Сделали новый перевозочный лист
                 statistic.ChangeCostWithoutDiscount(shopPacks);
                 statistic.ChangeCostWithDiscount(shopPacks, _disc);
                 statistic.ForShopPacks(shopPacks);
@@ -130,8 +106,8 @@
                 statistic.WarehouseStatus(wh);
                 Console.WriteLine("===============");
                 Console.WriteLine("===============");
-                wh._tempday += 1;
-                supplier._tempday += 1;
+                wh.CurrentDay += 1;
+                supplier.CurrentDay += 1;
             }
 
             statistic.AllStat();
