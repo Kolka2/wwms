@@ -1,0 +1,116 @@
+﻿<Window x:Class="MPProject.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MPProject"
+        mc:Ignorable="d"
+        Title="Настройки" Height="1032" Width="746"
+        Background="Black">
+    <Window.Resources>
+        <!-- Стиль для текстовых полей -->
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="Orange"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+        <!-- Стиль для меток -->
+        <Style x:Key="LabelStyle" TargetType="Label">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <!-- Стиль для кнопок -->
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="Orange"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Orange"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <StackPanel Margin="20" VerticalAlignment="Center">
+            <!-- Минимальное количество продуктов в заказе -->
+            <Label Style="{StaticResource LabelStyle}">Минимальное количество продуктов в заказе:</Label>
+            <TextBox x:Name="MinProductsCountInOrder" Style="{StaticResource TextBoxStyle}" 
+                     Text="5"  MaxLength="2" />
+
+            <!-- Общее количество дней -->
+            <Label Style="{StaticResource LabelStyle}">Количество дней (от 10 до 30):</Label>
+            <TextBox x:Name="TotalDays" Style="{StaticResource TextBoxStyle}" 
+                     Text="15"  MaxLength="2" />
+
+            <!-- Количество магазинов -->
+            <Label Style="{StaticResource LabelStyle}">Количество магазинов (от 3 до 9):</Label>
+            <TextBox x:Name="NumStores" Style="{StaticResource TextBoxStyle}" 
+                     Text="5" MaxLength="1"  />
+
+            <!-- Количество продуктов всего -->
+            <Label Style="{StaticResource LabelStyle}">Количество продуктов всего (от 12 до 20):</Label>
+            <TextBox x:Name="NumProducts" Style="{StaticResource TextBoxStyle}" 
+                     Text="15" MaxLength="2" />
+
+            <!-- Минимальное количество продукта для заказа -->
+            <Label Style="{StaticResource LabelStyle}">Минимальное количество продукта для заказа:</Label>
+            <TextBox x:Name="MinQ" Style="{StaticResource TextBoxStyle}" 
+                     Text="4000" MaxLength="10" TextChanged="MinQ_TextChanged" />
+
+            <!-- Максимальное количество продукта для заказа -->
+            <Label Style="{StaticResource LabelStyle}">Максимальное количество продукта для заказа:</Label>
+            <TextBox x:Name="MaxQ" Style="{StaticResource TextBoxStyle}" 
+                     Text="7000"  MaxLength="10" TextChanged="MaxQ_TextChanged" />
+
+            <!-- Скидка -->
+            <Label Style="{StaticResource LabelStyle}">Скидка (от 0,1 до 0,99):</Label>
+            <TextBox x:Name="Discount" Style="{StaticResource TextBoxStyle}" 
+                     Text="0,15"  MaxLength="4" />
+
+            <!-- Путь до файла -->
+            <Label Style="{StaticResource LabelStyle}">Путь до файла (должен иметь расширение .txt):</Label>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="Filename" Style="{StaticResource TextBoxStyle}" 
+                         Text="logfile1.txt" IsReadOnly="True" Grid.Column="0" />
+                <Button Grid.Column="1" Content="Обзор..." Click="OnBrowseFileClick" 
+                        Style="{StaticResource ButtonStyle}" Margin="5"/>
+            </Grid>
+
+            <!-- Кнопки сохранения и отмены -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                <Button Content="Сохранить" Click="OnSaveClick" 
+                        Style="{StaticResource ButtonStyle}" Margin="5"/>
+                <Button Content="Отмена" Click="OnCancelClick" 
+                        Style="{StaticResource ButtonStyle}" Margin="5"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
