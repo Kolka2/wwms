@@ -1,10 +1,9 @@
-﻿namespace wwms
+﻿namespace backend
 {
-    internal class SupplyPackage
+    public class SupplyPackage
     {
-        public SupplyOrder order;
-        public Dictionary<Product, List<WholesalePackage>> Products = new(new ProductComparer());
-        public int DeliveryDay;
+        public readonly Dictionary<Product, List<WholesalePackage>> Products = new(new ProductComparer());
+        public readonly int DeliveryDay;
 
         public SupplyPackage(SupplyOrder order)
         {

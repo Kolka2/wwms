@@ -1,49 +1,47 @@
-﻿using System.IO;
-
-namespace wwms
+﻿namespace backend
 {
-    internal class Statistic
+    public class Statistic
     {
-        public double totalCost = 0; //Заработано
-        public double totalLose = 0; //Потрачено
-        public Warehouse wh;
-        public string file; //адрес файла для сохранения
+        private double _totalCost;
+        private double _totalLose;
+        private readonly Warehouse _wh;
+        private readonly string _outputFile;
 
         public Statistic(Warehouse warehouse, string f)
         {
-            file = f;
-            wh = warehouse;
+            _outputFile = f;
+            _wh = warehouse;
         }
 
         // Вывод общей статистики
         public void WarehouseStatus(Warehouse wh)
         {
-            using (StreamWriter sw = new(file, true))
+            using (StreamWriter sw = new(_outputFile, true))
             {
-                sw.WriteLine($"День:{wh._tempday}");
+                sw.WriteLine($"День:{wh.CurrentDay}");
                 foreach (Product p in wh.Inventory.Keys)
                 {
                     sw.WriteLine($"Продукт:{p}");
                     sw.WriteLine(
-                        $"    Количество оптовых упаковок без скидки:{wh.Inventory[p].Count(x => !x.IsDicounted)}");
+                        $"    Количество оптовых упаковок без скидки:{wh.Inventory[p].Count(x => !x.IsDiscounted)}");
                     sw.WriteLine(
-                        $"    Количество оптовых упаковок со скидкой:{wh.Inventory[p].Count(x => x.IsDicounted)}");
-                    sw.WriteLine($"    Количество оптовых упаковок всего:{wh.Inventory[p].Count()}");
+                        $"    Количество оптовых упаковок со скидкой:{wh.Inventory[p].Count(x => x.IsDiscounted)}");
+                    sw.WriteLine($"    Количество оптовых упаковок всего:{wh.Inventory[p].Count}");
                 }
 
                 sw.Close();
             }
 
 
-            Console.WriteLine($"День:{wh._tempday}");
+            Console.WriteLine($"День:{wh.CurrentDay}");
             foreach (Product p in wh.Inventory.Keys)
             {
                 Console.WriteLine($"Продукт:{p}");
                 Console.WriteLine(
-                    $"    Количество оптовых упаковок без скидки:{wh.Inventory[p].Count(x => !x.IsDicounted)}");
+                    $"    Количество оптовых упаковок без скидки:{wh.Inventory[p].Count(x => !x.IsDiscounted)}");
                 Console.WriteLine(
-                    $"    Количество оптовых упаковок со скидкой:{wh.Inventory[p].Count(x => x.IsDicounted)}");
-                Console.WriteLine($"    Количество оптовых упаковок всего:{wh.Inventory[p].Count()}");
+                    $"    Количество оптовых упаковок со скидкой:{wh.Inventory[p].Count(x => x.IsDiscounted)}");
+                Console.WriteLine($"    Количество оптовых упаковок всего:{wh.Inventory[p].Count}");
             }
         }
 
@@ -53,37 +51,27 @@ namespace wwms
             {
                 foreach (Product p in package.ItemsWithoutDiscount.Keys)
                 {
-                    totalCost +=
-                        p.Price * package.ItemsWithoutDiscount[p] *
-                        wh.helper[p].PackageCount; //Цена продукта*кол-во оптовых пачек*кол-во продуктов в оптовой пачке
+                    _totalCost += p.Price * package.ItemsWithoutDiscount[p] * _wh.Helper[p].PackageCount;
                 }
             }
-
-            ;
         }
 
-        // Подумать как передать
         public void ChangeCostWithDiscount(List<ShopPackage> packages, double discount)
         {
             foreach (ShopPackage package in packages)
             {
                 foreach (Product p in package.ItemsWithDiscount.Keys)
                 {
-                    totalCost += (p.Price - p.Price * discount) * package.ItemsWithDiscount[p] *
-                                 wh.helper[p]
-                                     .PackageCount; //Цена продукта*кол-во оптовых пачек*кол-во продуктов в оптовой пачке
+                    _totalCost += (p.Price - p.Price * discount) * package.ItemsWithDiscount[p] * _wh.Helper[p].PackageCount;
                 }
             }
-
-            ;
         }
 
         public void ChangeLostDeleted(List<WholesalePackage> deleted)
         {
-            // Сначала теряем в результате Discount, а затем еще и оставшееся. Учесть
             foreach (WholesalePackage package in deleted)
             {
-                totalLose += package.DiscountPrice * package.PackageCount;
+                _totalLose += package.DiscountPrice * package.PackageCount;
             }
         }
 
@@ -91,17 +79,16 @@ namespace wwms
         {
             foreach (WholesalePackage package in discounted)
             {
-                totalLose += (package.Price - package.DiscountPrice) * package.PackageCount;
+                _totalLose += (package.Price - package.DiscountPrice) * package.PackageCount;
             }
         }
 
 
-        // Перевозки на следующий день
         public void ForShopPacks(List<ShopPackage> packages)
         {
-            using (StreamWriter sw = new(file, true))
+            using (StreamWriter sw = new(_outputFile, true))
             {
-                sw.WriteLine($"Перевозки на {wh._tempday + 1}");
+                sw.WriteLine($"Перевозки на {_wh.CurrentDay + 1}");
                 foreach (var package in packages)
                 {
                     sw.WriteLine("----------");
@@ -156,12 +143,12 @@ namespace wwms
         public void AllStat()
         {
             Console.WriteLine("Конец");
-            Console.WriteLine($"Всего прибыли:{totalCost}");
-            Console.WriteLine($"Всего убытков:{totalLose}");
-            using (StreamWriter wr = new(file, true))
+            Console.WriteLine($"Всего прибыли:{_totalCost}");
+            Console.WriteLine($"Всего убытков:{_totalLose}");
+            using (StreamWriter wr = new(_outputFile, true))
             {
-                wr.WriteLine($"Всего прибыли:{totalCost}");
-                wr.WriteLine($"Всего убытков:{totalLose}");
+                wr.WriteLine($"Всего прибыли:{_totalCost}");
+                wr.WriteLine($"Всего убытков:{_totalLose}");
             }
         }
     }

@@ -1,23 +1,22 @@
-﻿namespace wwms
+﻿namespace backend
 {
-    internal class WholesalePackage : Product, IComparable<WholesalePackage>
+    public class WholesalePackage : Product, IComparable<WholesalePackage>
     {
-        public int PackageCount; // Количество упаковок в одной оптовой упаковке
-        public int TempPackageCount; // Текущее количество
+        public readonly int PackageCount; // Количество упаковок в одной оптовой упаковке
         public double DiscountPrice;
-        public int WasteDay;
-        public bool IsDicounted => DiscountPrice < base.Price;
+        public readonly int WasteDay;
+        public bool IsDiscounted => DiscountPrice < base.Price;
 
-        public WholesalePackage(Product p, int PackageCount, int WasteDay)
+        public WholesalePackage(Product p, int packageCount, int wasteDay)
         {
-            this.PackageCount = PackageCount;
+            this.PackageCount = packageCount;
             base.Name = p.Name;
             base.Quantity = p.Quantity;
             base.ExpiryDays = p.ExpiryDays;
             base.Price = p.Price;
             base.MinWholesalePackages = p.MinWholesalePackages;
             DiscountPrice = p.Price;
-            this.WasteDay = WasteDay;
+            this.WasteDay = wasteDay;
         }
 
         public void MakeDiscount(double disc)

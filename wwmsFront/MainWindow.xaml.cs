@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using wwms;
+using backend;
 
 namespace MPProject
 {
@@ -30,7 +30,7 @@ namespace MPProject
             Dictionary<Product, List<WholesalePackage>> dict = new Dictionary<Product, List<WholesalePackage>>(new ProductComparer());
             //Есть еще один конструктор для Simulation s=new Simulation(filename,Discount,totalDays,NumStores,numProducts,minProductsCountInOrder,dict);
             //Задача реализовать создание на фронте словаря для передачи в этот конструктор. Далее он будет передан в Inventory класса Warehouse
-            Simulation s = new Simulation(filename, Discount, totalDays, NumStores, numProducts, minProductsCountInOrder, r);
+            Simulation s = new Simulation(filename, Discount, totalDays, NumStores, numProducts, r);
             s.Run();
             MessageBox.Show("Симуляция прошла успешно!");
         }
