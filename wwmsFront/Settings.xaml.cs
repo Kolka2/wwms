@@ -248,33 +248,6 @@ namespace MPProject
             }
         }
 
-       
-        public bool ValidatePath(string filePath)
-        {
-            try
-            {
-                // Проверяем существование файла
-                if (!File.Exists(filePath))
-                {
-                    MessageBox.Show("Файл не существует.");
-                    return false;
-                }
-
-                // Проверяем, доступен ли файл для записи
-                using (FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Write))
-                {
-                    // Если доступ к файлу для записи разрешен, то все в порядке
-                    _Path = filePath;
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                // Если произошла ошибка (например, файл занят или недоступен), выводим сообщение
-                MessageBox.Show($"Ошибка при проверке файла: {ex.Message}");
-                return false;
-            }
-        }
         private bool ValidateInput()
         {
             if (!ValidateMinProductsCountInOrder())
