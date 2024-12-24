@@ -77,12 +77,12 @@
                      Text="15" MaxLength="2" />
 
             <!-- Минимальное количество продукта для заказа -->
-            <Label Style="{StaticResource LabelStyle}">Минимальное количество условных единиц продукта (гр/кг и т.д) для заказа:</Label>
+            <Label Style="{StaticResource LabelStyle}">Минимальное количество условных единиц продукта (шт/кг/л, и т. д.) для заказа:</Label>
             <TextBox x:Name="MinQ" Style="{StaticResource TextBoxStyle}" 
                      Text="4000" MaxLength="10" TextChanged="MinQ_TextChanged" />
 
             <!-- Максимальное количество продукта для заказа -->
-            <Label Style="{StaticResource LabelStyle}">Максимальное количество условных единиц продукта (гр/кг и т.д) для заказа:</Label>
+            <Label Style="{StaticResource LabelStyle}">Максимальное количество условных единиц продукта (шт/кг/л, и т. д.) для заказа:</Label>
             <TextBox x:Name="MaxQ" Style="{StaticResource TextBoxStyle}" 
                      Text="7000"  MaxLength="10" TextChanged="MaxQ_TextChanged" />
 
