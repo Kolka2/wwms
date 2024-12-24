@@ -57,7 +57,7 @@
     <Grid>
         <StackPanel Margin="20" VerticalAlignment="Center">
             <!-- Минимальное количество продуктов в заказе -->
-            <Label Style="{StaticResource LabelStyle}">Минимальное количество продуктов в заказе:</Label>
+            <Label Style="{StaticResource LabelStyle}">Минимальное количество типов продуктов в заказе от магазина:</Label>
             <TextBox x:Name="MinProductsCountInOrder" Style="{StaticResource TextBoxStyle}" 
                      Text="5"  MaxLength="2" />
 
@@ -72,17 +72,17 @@
                      Text="5" MaxLength="1"  />
 
             <!-- Количество продуктов всего -->
-            <Label Style="{StaticResource LabelStyle}">Количество продуктов всего (от 12 до 20):</Label>
+            <Label Style="{StaticResource LabelStyle}">Количество типов продуктов (от 12 до 20):</Label>
             <TextBox x:Name="NumProducts" Style="{StaticResource TextBoxStyle}" 
                      Text="15" MaxLength="2" />
 
             <!-- Минимальное количество продукта для заказа -->
-            <Label Style="{StaticResource LabelStyle}">Минимальное количество продукта для заказа:</Label>
+            <Label Style="{StaticResource LabelStyle}">Минимальное количество условных единиц продукта (гр/кг и т.д) для заказа:</Label>
             <TextBox x:Name="MinQ" Style="{StaticResource TextBoxStyle}" 
                      Text="4000" MaxLength="10" TextChanged="MinQ_TextChanged" />
 
             <!-- Максимальное количество продукта для заказа -->
-            <Label Style="{StaticResource LabelStyle}">Максимальное количество продукта для заказа:</Label>
+            <Label Style="{StaticResource LabelStyle}">Максимальное количество условных единиц продукта (гр/кг и т.д) для заказа:</Label>
             <TextBox x:Name="MaxQ" Style="{StaticResource TextBoxStyle}" 
                      Text="7000"  MaxLength="10" TextChanged="MaxQ_TextChanged" />
 
@@ -92,7 +92,7 @@
                      Text="0,15"  MaxLength="4" />
 
             <!-- Путь до файла -->
-            <Label Style="{StaticResource LabelStyle}">Путь до файла (должен иметь расширение .txt):</Label>
+            <Label Style="{StaticResource LabelStyle}">Путь до файла, куда будет выведен полный лог симуляции:</Label>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
