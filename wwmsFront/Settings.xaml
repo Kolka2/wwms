@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MPProject"
         mc:Ignorable="d"
-        Title="Настройки" Height="1032" Width="746"
-        Background="Black">
+        Title="Настройки" SizeToContent="WidthAndHeight"
+        MinHeight="820" MinWidth="670"
+        Background="Black" Icon="/settings.ico">
     <Window.Resources>
         <!-- Стиль для текстовых полей -->
         <Style x:Key="TextBoxStyle" TargetType="TextBox">

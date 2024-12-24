@@ -9,7 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="settings.ico" />
+    <None Remove="warehouse.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\backend\backend.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="settings.ico" />
+    <Resource Include="warehouse.ico" />
   </ItemGroup>
 
 </Project>
