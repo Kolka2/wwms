@@ -83,7 +83,7 @@ namespace frontend
             try
             {
                 int allDays = int.Parse(TotalDays.Text);
-                if (allDays >= 12 && allDays <= 30)
+                if (allDays >= 10 && allDays <= 30)
                 {
                     _TotalDays = allDays;
                     return true;
