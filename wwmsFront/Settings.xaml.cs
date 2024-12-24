@@ -10,7 +10,6 @@ namespace MPProject
     /// </summary>
     public partial class Settings : Window
     {
-        public int a = 123;
         public int _MinProductsCountInOrder;
         public int _TotalDays;
         public int _NumStores;
@@ -22,6 +21,19 @@ namespace MPProject
         public Settings()
         {
             InitializeComponent();
+            LoadSettings();
+        }
+        public void LoadSettings()
+        {
+            _MinProductsCountInOrder = int.Parse(MinProductsCountInOrder.Text);
+            _TotalDays = int.Parse(TotalDays.Text);
+            _NumStores = int.Parse(NumStores.Text);
+            _NumProducts = int.Parse(NumProducts.Text);
+            _MinQuantity = int.Parse(MinQ.Text);
+            _MaxQuantity = int.Parse(MaxQ.Text);
+            _Discount = double.Parse(Discount.Text);
+            _Path = Filename.Text;
+
         }
 
         public bool ValidateMinProductsCountInOrder()
@@ -248,16 +260,8 @@ namespace MPProject
                     return false;
                 }
 
-                // Проверяем, что файл имеет формат .txt
-                string fileExtension = System.IO.Path.GetExtension(filePath);
-                if (fileExtension.ToLower() != ".txt")
-                {
-                    MessageBox.Show("Файл имеет неверный формат. Ожидается .txt.");
-                    return false;
-                }
-
                 // Проверяем, доступен ли файл для записи
-                using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Write))
+                using (FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Write))
                 {
                     // Если доступ к файлу для записи разрешен, то все в порядке
                     _Path = filePath;
