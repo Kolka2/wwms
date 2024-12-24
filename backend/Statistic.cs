@@ -31,18 +31,6 @@
 
                 sw.Close();
             }
-
-
-            Console.WriteLine($"День:{wh.CurrentDay}");
-            foreach (Product p in wh.Inventory.Keys)
-            {
-                Console.WriteLine($"Продукт:{p}");
-                Console.WriteLine(
-                    $"    Количество оптовых упаковок без скидки:{wh.Inventory[p].Count(x => !x.IsDiscounted)}");
-                Console.WriteLine(
-                    $"    Количество оптовых упаковок со скидкой:{wh.Inventory[p].Count(x => x.IsDiscounted)}");
-                Console.WriteLine($"    Количество оптовых упаковок всего:{wh.Inventory[p].Count}");
-            }
         }
 
         public void ChangeCostWithoutDiscount(List<ShopPackage> packages)
@@ -108,48 +96,18 @@
                     sw.WriteLine("------");
                 }
 
-                foreach (var package in packages)
-                {
-                    Console.WriteLine("----------");
-                    Console.WriteLine(package.Name);
-                    Console.WriteLine("Оптовые упаковки со скидкой");
-                    foreach (Product p in package.ItemsWithDiscount.Keys)
-                    {
-                        Console.WriteLine($"Продукт:{p} Кол-во оптовых упаковок:{package.ItemsWithDiscount[p]}");
-                    }
-
-                    Console.WriteLine("Оптовые оптовых упаковки без скидки");
-                    foreach (Product p in package.ItemsWithoutDiscount.Keys)
-                    {
-                        Console.WriteLine($"Продукт:{p} Кол-во упаковок:{package.ItemsWithoutDiscount[p]}");
-                    }
-
-                    Console.WriteLine("------");
-                }
-
                 sw.Close();
             }
         }
 
-        public void ForShopOrders(List<ShopOrder> orders)
+        public string AllStat()
         {
-            foreach (var order in orders)
-            {
-                Console.WriteLine(order.Name);
-                Console.WriteLine();
-            }
-        }
-
-        public void AllStat()
-        {
-            Console.WriteLine("Конец");
-            Console.WriteLine($"Всего прибыли:{_totalCost}");
-            Console.WriteLine($"Всего убытков:{_totalLose}");
             using (StreamWriter wr = new(_outputFile, true))
             {
                 wr.WriteLine($"Всего прибыли:{_totalCost}");
                 wr.WriteLine($"Всего убытков:{_totalLose}");
             }
+            return $"Всего прибыли: {Math.Round(_totalCost, 2)}\nВсего убытков: {Math.Round(_totalLose, 2)}";
         }
     }
 }
