@@ -32,7 +32,7 @@ namespace MPProject
             _MinQuantity = int.Parse(MinQ.Text);
             _MaxQuantity = int.Parse(MaxQ.Text);
             _Discount = double.Parse(Discount.Text);
-            _Path = Filename.Text;
+            _Path = "logfile1.txt";
 
         }
 
@@ -301,10 +301,6 @@ namespace MPProject
             {
                     return false;
             }
-            else if (!ValidatePath(Filename.Text))
-            {
-                return false;
-            }
             
             MessageBox.Show("Все ок");
             return true;
@@ -326,8 +322,11 @@ namespace MPProject
         private void OnBrowseFileClick(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new() { Filter = "Text Files (*.txt)|*.txt" };
-            ofd.ShowDialog();
-            Filename.Text = ofd.FileName;
+            if (ofd.ShowDialog() == true)
+            {
+                Filename.Text = ofd.FileName;
+                _Path = Filename.Text;
+            }
         }
 
         private void MinQ_TextChanged(object sender, TextChangedEventArgs e)
