@@ -36,6 +36,7 @@ namespace frontend
         private void OnSettingsClick(object sender, RoutedEventArgs e)
         {
             _settings.Show();
+            _settings.Activate();
         }
 
         private void OnExitClick(object sender, RoutedEventArgs e)
