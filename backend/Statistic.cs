@@ -7,9 +7,9 @@
         private readonly Warehouse _wh;
         private readonly string _outputFile;
 
-        public Statistic(Warehouse warehouse, string f)
+        public Statistic(Warehouse warehouse, string outputFile)
         {
-            _outputFile = f;
+            _outputFile = outputFile;
             _wh = warehouse;
         }
 

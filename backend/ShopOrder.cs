@@ -9,14 +9,14 @@
         public Dictionary<Product, double> ItemsWithDiscount { get; } = new(new ProductComparer());
 
 
-        public ShopOrder(Dictionary<Product, List<WholesalePackage>> inventory, string n, RandomGenerator r)
+        public ShopOrder(Dictionary<Product, List<WholesalePackage>> inventory, string shopName, RandomGenerator rg)
         {
-            Name = n;
-            List<Product> products = r.GetListProducts(inventory.Keys.ToList());
+            Name = shopName;
+            List<Product> products = rg.GetListProducts(inventory.Keys.ToList());
 
             foreach (Product product in products)
             {
-                double count = r.GenQuantity();
+                double count = rg.GenQuantity();
                 List<WholesalePackage> packages = inventory[product];
                 if (!ItemsWithoutDiscount.TryAdd(product, count))
                 {
@@ -29,11 +29,11 @@
                     
                     if (!ItemsWithDiscount.ContainsKey(package))
                     {
-                        ItemsWithDiscount.Add(package, r.GenQuantity());
+                        ItemsWithDiscount.Add(package, rg.GenQuantity());
                     }
                     else
                     {
-                        ItemsWithDiscount[package] += r.GenQuantity();
+                        ItemsWithDiscount[package] += rg.GenQuantity();
                     }
                 }
             }

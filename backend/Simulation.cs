@@ -13,24 +13,24 @@
         private readonly bool _created;
         private Statistic _statistic;
 
-        public Simulation(string f, double d, int totaldDays, int numStores, int numProducts,
-            RandomGenerator r1)
+        public Simulation(string filename, double discount, int totaldDays, int numStores, int numProducts,
+            RandomGenerator rg)
         {
-            _filename = f;
-            _disc = d;
+            _filename = filename;
+            _disc = discount;
             _totalDays = totaldDays;
             _numStores = numStores;
             _numProducts = numProducts;
-            _randomGenerator = r1;
+            _randomGenerator = rg;
             _created = false;
         }
 
-        public Simulation(string f, double d, int totalDays, int numStore, int numProducts,
-            Dictionary<Product, List<WholesalePackage>> products, RandomGenerator r1)
+        public Simulation(string filename, double discount, int totalDays, int numStore, int numProducts,
+            Dictionary<Product, List<WholesalePackage>> products, RandomGenerator rg)
         {
-            _filename = f;
-            _disc = d;
-            _randomGenerator = r1;
+            _filename = filename;
+            _disc = discount;
+            _randomGenerator = rg;
             _totalDays = totalDays;
             _numStores = numStore;
             _numProducts = numProducts;

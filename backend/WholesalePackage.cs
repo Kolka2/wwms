@@ -7,15 +7,15 @@
         public readonly int WasteDay;
         public bool IsDiscounted => DiscountPrice < base.Price;
 
-        public WholesalePackage(Product p, int packageCount, int wasteDay)
+        public WholesalePackage(Product product, int packageCount, int wasteDay)
         {
             this.PackageCount = packageCount;
-            base.Name = p.Name;
-            base.Quantity = p.Quantity;
-            base.ExpiryDays = p.ExpiryDays;
-            base.Price = p.Price;
-            base.MinWholesalePackages = p.MinWholesalePackages;
-            DiscountPrice = p.Price;
+            base.Name = product.Name;
+            base.Quantity = product.Quantity;
+            base.ExpiryDays = product.ExpiryDays;
+            base.Price = product.Price;
+            base.MinWholesalePackages = product.MinWholesalePackages;
+            DiscountPrice = product.Price;
             this.WasteDay = wasteDay;
         }
 

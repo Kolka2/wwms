@@ -9,9 +9,9 @@
 
         public readonly Dictionary<Product, WholesalePackage> Helper = new(new ProductComparer());
         
-        public Warehouse(int day, Dictionary<Product, List<WholesalePackage>> inv)
+        public Warehouse(int day, Dictionary<Product, List<WholesalePackage>> inventory)
         {
-            Inventory = inv;
+            Inventory = inventory;
             CurrentDay = day;
         }
 
@@ -37,7 +37,7 @@
             {
                 int count = randomGenerator.NextInt(10, 20);
                 List<WholesalePackage> packages = new();
-                WholesalePackage package = new WholesalePackage(p, count, p.ExpiryDays + day);
+                WholesalePackage package = new(p, count, p.ExpiryDays + day);
                 Helper.Add(p, package);
                 for (int i = 0; i < count; i++)
                 {

@@ -7,7 +7,7 @@
 
         public SupplyOrder(int tempDay)
         {
-            Random random = new Random();
+            Random random = new();
             DeliveryDay = tempDay + random.Next(1, 6);
         }
 
