@@ -1,18 +1,7 @@
 ﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace MPProject
 {
@@ -320,8 +309,10 @@ namespace MPProject
         }
         private void OnSaveClick(object sender, RoutedEventArgs e)
         {
-            ValidateInput();
-            this.Close();
+            if (ValidateInput())
+            {
+                this.Close();
+            }
         }
 
         private void OnCancelClick(object sender, RoutedEventArgs e)
@@ -331,7 +322,7 @@ namespace MPProject
 
         private void OnBrowseFileClick(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
+            OpenFileDialog ofd = new() { Filter = "Text Files (*.txt)|*.txt" };
             ofd.ShowDialog();
             Filename.Text = ofd.FileName;
         }
