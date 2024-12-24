@@ -8,11 +8,12 @@ namespace MPProject
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Settings _settings = new();
+        private Settings _settings;
 
         public MainWindow()
         {
             InitializeComponent();
+            _settings = new();
         }
 
         private void OnStartSimulationClick(object sender, RoutedEventArgs e)
@@ -39,6 +40,7 @@ namespace MPProject
 
         private void OnExitClick(object sender, RoutedEventArgs e)
         {
+            _settings.Close();
             Application.Current.Shutdown();
         }
     }

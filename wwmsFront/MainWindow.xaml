@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="WWMS" 
         MinHeight="200" MinWidth="300"
-        Height="450" Width="800" Icon="/warehouse.ico">
+        Height="450" Width="800" Icon="/warehouse.ico"
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <!-- Стиль для кнопок -->
         <Style x:Key="ButtonStyle" TargetType="Button">
