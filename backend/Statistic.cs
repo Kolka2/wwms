@@ -102,12 +102,12 @@
 
         public string AllStat()
         {
+	        var resultString = $"Всего прибыли: {Math.Round(_totalCost, 2)}\nВсего убытков: {Math.Round(_totalLose, 2)}"; 
             using (StreamWriter wr = new(_outputFile, true))
             {
-                wr.WriteLine($"Всего прибыли:{_totalCost}");
-                wr.WriteLine($"Всего убытков:{_totalLose}");
+                wr.WriteLine(resultString);
             }
-            return $"Всего прибыли: {Math.Round(_totalCost, 2)}\nВсего убытков: {Math.Round(_totalLose, 2)}";
+            return resultString;
         }
     }
 }
