@@ -29,7 +29,7 @@ namespace MPProject
 
             Simulation s = new(filename, discount, totalDays, numStores, numProducts, r);
             s.Run();
-            MessageBox.Show("Симуляция прошла успешно!");
+            MessageBox.Show($"Симуляция прошла успешно!\n\n{s.Stats()}", "Результаты");
         }
 
         private void OnSettingsClick(object sender, RoutedEventArgs e)

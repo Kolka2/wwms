@@ -11,6 +11,7 @@
         private readonly Dictionary<Product, List<WholesalePackage>> _forWh = new(new ProductComparer());
         private string[] _productList;
         private readonly bool _created;
+        private Statistic _statistic;
 
         public Simulation(string f, double d, int totaldDays, int numStores, int numProducts,
             RandomGenerator r1)
@@ -62,10 +63,10 @@
 
             Supplier supplier = new(wh);
 
-            Statistic statistic = new(wh, _filename);
+            _statistic = new(wh, _filename);
             List<ShopPackage> shopPacks = []; // Перевозки для следующего дня
             List<ShopOrder> shopOrders = []; // Заказы, что пришли сегодня
-            statistic.AllStat();
+            _statistic.AllStat();
             for (int i = 1; i <= _totalDays; i++)
             {
                 Console.WriteLine("===============");
@@ -75,15 +76,15 @@
 
                 wh.FullFill();
                 Console.WriteLine("После обновления ассортимента");
-                statistic.WarehouseStatus(wh);
+                _statistic.WarehouseStatus(wh);
                 wh.MakeTransport(shopPacks);
                 List<WholesalePackage> discpack = wh.DiscountPrices(_disc);
-                statistic.ChangeLostDiscounted(discpack);
+                _statistic.ChangeLostDiscounted(discpack);
                 List<WholesalePackage> deleted = wh.RemoveExpirated();
-                statistic.ChangeLostDeleted(deleted);
+                _statistic.ChangeLostDeleted(deleted);
 
                 Console.WriteLine("После перевозок");
-                statistic.WarehouseStatus(wh);
+                _statistic.WarehouseStatus(wh);
 
                 SupplyOrder supOrder = wh.CreateSupplyOrder(); // Сделали новый заказ к поставщику
                 SupplyPackage supPackage = supplier.CreatePackage(supOrder); // Сделали посылку от поставщика
@@ -99,18 +100,20 @@
 
                 Console.WriteLine($"Перевозки по магазинам на {i + 1}:");
                 shopPacks = wh.CreateTransportList(shopOrders); // Сделали новый перевозочный лист
-                statistic.ChangeCostWithoutDiscount(shopPacks);
-                statistic.ChangeCostWithDiscount(shopPacks, _disc);
-                statistic.ForShopPacks(shopPacks);
+                _statistic.ChangeCostWithoutDiscount(shopPacks);
+                _statistic.ChangeCostWithDiscount(shopPacks, _disc);
+                _statistic.ForShopPacks(shopPacks);
                 Console.WriteLine($"Состояние WAREHOUSE");
-                statistic.WarehouseStatus(wh);
+                _statistic.WarehouseStatus(wh);
                 Console.WriteLine("===============");
                 Console.WriteLine("===============");
                 wh.CurrentDay += 1;
                 supplier.CurrentDay += 1;
             }
-
-            statistic.AllStat();
+        }
+        public string Stats()
+        {
+            return _statistic.AllStat();
         }
     }
 }

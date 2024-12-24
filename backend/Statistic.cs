@@ -140,16 +140,14 @@
             }
         }
 
-        public void AllStat()
+        public string AllStat()
         {
-            Console.WriteLine("Конец");
-            Console.WriteLine($"Всего прибыли:{_totalCost}");
-            Console.WriteLine($"Всего убытков:{_totalLose}");
             using (StreamWriter wr = new(_outputFile, true))
             {
                 wr.WriteLine($"Всего прибыли:{_totalCost}");
                 wr.WriteLine($"Всего убытков:{_totalLose}");
             }
+            return $"Всего прибыли: {Math.Round(_totalCost, 2)}\nВсего убытков: {Math.Round(_totalLose, 2)}";
         }
     }
 }
