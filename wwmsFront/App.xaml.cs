@@ -10,5 +10,4 @@ namespace wwmsFront
     public partial class App : Application
     {
     }
-
 }

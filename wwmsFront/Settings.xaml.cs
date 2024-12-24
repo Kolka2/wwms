@@ -241,7 +241,6 @@ namespace MPProject
         {
             try
             {
-               
                 // Проверяем существование файла
                 if (!File.Exists(filePath))
                 {
@@ -311,13 +310,13 @@ namespace MPProject
         {
             if (ValidateInput())
             {
-                this.Close();
+                this.Hide();
             }
         }
 
         private void OnCancelClick(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            this.Hide();
         }
 
         private void OnBrowseFileClick(object sender, RoutedEventArgs e)

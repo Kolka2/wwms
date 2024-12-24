@@ -34,7 +34,6 @@ namespace MPProject
 
         private void OnSettingsClick(object sender, RoutedEventArgs e)
         {
-            _settings = new Settings();
             _settings.Show();
         }
 
