@@ -27,7 +27,7 @@
         int IComparable<WholesalePackage>.CompareTo(WholesalePackage other)
         {
             if (other.Name.Equals(this.Name) && other.WasteDay.Equals(this.WasteDay)) return 0;
-            return base.CompareTo(other);
+            return Name.CompareTo(other.Name);
         }
     }
 }

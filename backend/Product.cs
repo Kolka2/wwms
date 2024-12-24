@@ -1,6 +1,6 @@
 ﻿namespace backend
 {
-    public class Product : IComparable<Product>, IComparer<Product>
+    public class Product
     {
         public string Name { get; set; }
         public double Quantity { get; set; } // Гр или кг или штук в одной пачке
@@ -26,25 +26,11 @@
             MinWholesalePackages = 0;
         }
 
-
-        public int CompareTo(Product p)
-        {
-            return Name.CompareTo(p.Name);
-        }
-
-        public bool Equals(Product x, Product y)
-        {
-            return x.Name == y.Name;
-        }
+      
 
         public override int GetHashCode()
         {
             return Name.GetHashCode();
-        }
-
-        int IComparer<Product>.Compare(Product x, Product y)
-        {
-            return x.Name.CompareTo(y.Name);
         }
 
         public override string ToString()
